@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Set capability to bind to privileged ports (67/udp, 547/udp)
+setcap 'cap_net_bind_service=+ep' /usr/bin/shadowdhcp
+
+exit 0

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+addgroup -S shadowdhcp 2>/dev/null
+adduser -S -D -H -h /var/lib/shadowdhcp -s /sbin/nologin \
+	-G shadowdhcp -g "shadowdhcp service" shadowdhcp 2>/dev/null
+
+exit 0

@@ -1,0 +1,48 @@
+# Maintainer: Mackenzie Hauck <mackenzie@shadowinternet.ca>
+pkgname=shadowdhcp
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Reservation-only DHCPv4/DHCPv6 server"
+url="https://github.com/shadowinternet/shadowdhcp"
+arch="x86_64"
+license="MIT AND Apache-2.0"
+depends="libcap-utils"
+install="$pkgname.pre-install $pkgname.post-install $pkgname.post-upgrade"
+source="
+	shadowdhcp-$pkgver-linux-musl::https://github.com/shadowinternet/shadowdhcp/releases/download/v$pkgver/shadowdhcp-linux-musl
+	shadowdhcp.initd
+	shadowdhcp.confd
+	shadowdhcp.logrotate
+	config.json
+	ids.json
+	reservations.json
+"
+options="!check"  # No test suite for binary package
+
+# Output to shadow-aports repo structure
+export REPODEST="$HOME/packages/shadow-aports"
+
+package() {
+	# Install binary
+	install -Dm755 "$srcdir/shadowdhcp-$pkgver-linux-musl" "$pkgdir/usr/bin/shadowdhcp"
+
+	# Install OpenRC service
+	install -Dm755 "$srcdir/shadowdhcp.initd" "$pkgdir/etc/init.d/shadowdhcp"
+	install -Dm644 "$srcdir/shadowdhcp.confd" "$pkgdir/etc/conf.d/shadowdhcp"
+
+	# Install logrotate config
+	install -Dm644 "$srcdir/shadowdhcp.logrotate" "$pkgdir/etc/logrotate.d/shadowdhcp"
+
+	# Install default configuration (don't overwrite existing)
+	install -Dm640 -o root -g shadowdhcp "$srcdir/config.json" \
+		"$pkgdir/etc/shadowdhcp/config.json"
+	install -Dm640 -o root -g shadowdhcp "$srcdir/ids.json" \
+		"$pkgdir/etc/shadowdhcp/ids.json"
+	install -Dm640 -o root -g shadowdhcp "$srcdir/reservations.json" \
+		"$pkgdir/etc/shadowdhcp/reservations.json"
+
+	# Create log directory
+	install -dm750 -o shadowdhcp -g shadowdhcp "$pkgdir/var/log/shadowdhcp"
+}
+
+sha512sums=""

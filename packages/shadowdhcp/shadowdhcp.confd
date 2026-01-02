@@ -1,0 +1,4 @@
+# Configuration for /etc/init.d/shadowdhcp
+
+# Additional command arguments (optional)
+#command_args="--configdir /etc/shadowdhcp"

@@ -1,0 +1,15 @@
+# Build artifacts
+src/
+pkg/
+*.apk
+APKINDEX.tar.gz
+
+# Signing keys (NEVER commit private keys)
+*.rsa
+!*.rsa.pub
+
+# abuild working directories
+tmp/
+
+# OS files
+.DS_Store

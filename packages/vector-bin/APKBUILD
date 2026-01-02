@@ -1,0 +1,54 @@
+# Maintainer: Mackenzie Hauck <mackenzie@shadowinternet.ca>
+pkgname=vector-bin
+pkgver=0.52.0
+pkgrel=1
+pkgdesc="High-performance observability data pipeline (pre-built binary)"
+url="https://vector.dev"
+arch="x86_64 aarch64"
+license="MPL-2.0"
+depends=""
+provides="vector=$pkgver-r$pkgrel"
+install="$pkgname.pre-install $pkgname.post-install"
+options="!check"  # Pre-built binary
+
+# Map Alpine arch to Vector arch
+case "$CARCH" in
+	x86_64)  _varch="x86_64-unknown-linux-musl" ;;
+	aarch64) _varch="aarch64-unknown-linux-musl" ;;
+esac
+
+source="
+	https://packages.timber.io/vector/$pkgver/vector-$pkgver-$_varch.tar.gz
+	vector-bin.initd
+	vector-bin.confd
+	vector.toml
+"
+
+# Output to shadow-aports repo structure
+export REPODEST="$HOME/packages/shadow-aports"
+
+unpack() {
+	mkdir -p "$srcdir"
+	tar -xzf "$srcdir/vector-$pkgver-$_varch.tar.gz" -C "$srcdir" --strip-components=2
+}
+
+package() {
+	# Install binary
+	install -Dm755 "$srcdir/bin/vector" "$pkgdir/usr/bin/vector"
+
+	# Install OpenRC service
+	install -Dm755 "$srcdir/vector-bin.initd" "$pkgdir/etc/init.d/vector"
+	install -Dm644 "$srcdir/vector-bin.confd" "$pkgdir/etc/conf.d/vector"
+
+	# Install default configuration
+	install -Dm644 "$srcdir/vector.toml" "$pkgdir/etc/vector/vector.toml"
+
+	# Install license
+	install -Dm644 "$srcdir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+
+	# Create directories
+	install -dm755 -o vector -g vector "$pkgdir/var/lib/vector"
+	install -dm755 -o vector -g vector "$pkgdir/var/log/vector"
+}
+
+sha512sums=""

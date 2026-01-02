@@ -1,0 +1,15 @@
+# Vector configuration
+# See https://vector.dev/docs/reference/configuration/
+
+data_dir = "/var/lib/vector"
+
+# Example: collect host metrics
+[sources.host_metrics]
+type = "host_metrics"
+collectors = ["cpu", "memory", "disk", "network"]
+
+# Example: output to console (replace with your sink)
+[sinks.console]
+type = "console"
+inputs = ["host_metrics"]
+encoding.codec = "json"

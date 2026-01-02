@@ -1,0 +1,34 @@
+#!/sbin/openrc-run
+# OpenRC init script for shadowdhcp DHCP server
+
+name="shadowdhcp"
+description="Reservation-only DHCPv4/DHCPv6 server"
+
+command="/usr/bin/shadowdhcp"
+command_args="--configdir /etc/shadowdhcp"
+command_background=true
+command_user="shadowdhcp"
+command_group="shadowdhcp"
+
+pidfile="/run/${RC_SVCNAME}.pid"
+
+extra_started_commands="reload"
+description_reload="Reload DHCP reservations"
+
+reload() {
+    ebegin "Reloading ${name}"
+    start-stop-daemon --signal HUP --pidfile "${pidfile}"
+    eend $?
+}
+
+output_log="/var/log/shadowdhcp/shadowdhcp.log"
+error_log="/var/log/shadowdhcp/shadowdhcp.log"
+
+depend() {
+    need net
+    after firewall
+}
+
+start_pre() {
+    checkpath --directory --owner shadowdhcp:shadowdhcp --mode 0750 /var/log/shadowdhcp
+}
