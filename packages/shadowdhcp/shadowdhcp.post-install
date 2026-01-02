@@ -1,6 +1,34 @@
 #!/bin/sh
 
 # Set capability to bind to privileged ports (67/udp, 547/udp)
-setcap 'cap_net_bind_service=+ep' /usr/bin/shadowdhcp
+setcap 'cap_net_bind_service=+ep' /usr/bin/shadowdhcp || exit 1
+
+# Generates /etc/shadowdhcp/ids.json with IPv4 address and DUID
+OUTPUT_FILE="/etc/shadowdhcp/ids.json"
+
+# Get first non-loopback interface and IPv4
+info=$(ip -4 addr show scope global 2>/dev/null | awk '
+    /^[0-9]+:/ { iface=$2; gsub(/:/, "", iface); sub(/@.*/, "", iface) }
+    /inet / { split($2, a, "/"); print iface, a[1]; exit }
+')
+
+[ -z "$info" ] && exit 0
+
+iface=$(echo "$info" | awk '{print $1}')
+ipv4=$(echo "$info" | awk '{print $2}')
+
+[ -z "$iface" ] && exit 0
+[ -z "$ipv4" ] && exit 0
+
+mac=$(ip link show "$iface" 2>/dev/null | awk '/ether/ {print $2}')
+
+[ -z "$mac" ] && exit 0
+
+# Validate MAC format (basic check: 17 chars like aa:bb:cc:dd:ee:ff)
+[ ${#mac} -ne 17 ] && exit 0
+
+duid="00:03:00:01:${mac}"
+
+printf '{"v4":"%s","v6":"%s"}\n' "$ipv4" "$duid" > "$OUTPUT_FILE"
 
 exit 0

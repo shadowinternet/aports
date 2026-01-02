@@ -1,6 +1,6 @@
 # Maintainer: Mackenzie Hauck <mackenzie@shadowinternet.ca>
 pkgname=shadowdhcp
-pkgver=0.1.0
+pkgver=0.1.1
 pkgrel=1
 pkgdesc="Reservation-only DHCPv4/DHCPv6 server"
 url="https://github.com/shadowinternet/shadowdhcp"
@@ -11,7 +11,6 @@ install="$pkgname.pre-install $pkgname.post-install $pkgname.post-upgrade"
 source="
 	shadowdhcp-$pkgver-linux-musl::https://github.com/shadowinternet/shadowdhcp/releases/download/v$pkgver/shadowdhcp-linux-musl
 	shadowdhcp.initd
-	shadowdhcp.confd
 	shadowdhcp.logrotate
 	config.json
 	ids.json
@@ -28,7 +27,6 @@ package() {
 
 	# Install OpenRC service
 	install -Dm755 "$srcdir/shadowdhcp.initd" "$pkgdir/etc/init.d/shadowdhcp"
-	install -Dm644 "$srcdir/shadowdhcp.confd" "$pkgdir/etc/conf.d/shadowdhcp"
 
 	# Install logrotate config
 	install -Dm644 "$srcdir/shadowdhcp.logrotate" "$pkgdir/etc/logrotate.d/shadowdhcp"
