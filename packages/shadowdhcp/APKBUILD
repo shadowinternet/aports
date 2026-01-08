@@ -7,6 +7,8 @@ url="https://github.com/shadowinternet/shadowdhcp"
 arch="x86_64"
 license="MIT AND Apache-2.0"
 depends="libcap-utils"
+pkgusers="shadowdhcp"
+pkggroups="shadowdhcp"
 install="$pkgname.pre-install $pkgname.post-install $pkgname.post-upgrade"
 source="
 	shadowdhcp-$pkgver-linux-musl::https://github.com/shadowinternet/shadowdhcp/releases/download/v$pkgver/shadowdhcp-linux-musl
@@ -31,13 +33,13 @@ package() {
 	# Install logrotate config
 	install -Dm644 "$srcdir/shadowdhcp.logrotate" "$pkgdir/etc/logrotate.d/shadowdhcp"
 
-	# Install default configuration (ownership set by post-install)
-	install -Dm640 "$srcdir/config.json" "$pkgdir/etc/shadowdhcp/config.json"
-	install -Dm640 "$srcdir/ids.json" "$pkgdir/etc/shadowdhcp/ids.json"
-	install -Dm640 "$srcdir/reservations.json" "$pkgdir/etc/shadowdhcp/reservations.json"
+	# Install default configuration
+	install -Dm640 -g shadowdhcp "$srcdir/config.json" "$pkgdir/etc/shadowdhcp/config.json"
+	install -Dm640 -g shadowdhcp "$srcdir/ids.json" "$pkgdir/etc/shadowdhcp/ids.json"
+	install -Dm640 -g shadowdhcp "$srcdir/reservations.json" "$pkgdir/etc/shadowdhcp/reservations.json"
 
-	# Create log directory (ownership set by post-install)
-	install -dm750 "$pkgdir/var/log/shadowdhcp"
+	# Create log directory
+	install -dm750 -o shadowdhcp -g shadowdhcp "$pkgdir/var/log/shadowdhcp"
 }
 
 sha512sums=""

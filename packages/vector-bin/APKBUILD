@@ -7,6 +7,8 @@ url="https://vector.dev"
 arch="x86_64 aarch64"
 license="MPL-2.0"
 depends=""
+pkgusers="vector"
+pkggroups="vector"
 provides="vector=$pkgver-r$pkgrel"
 install="$pkgname.pre-install $pkgname.post-install"
 options="!check"  # Pre-built binary
@@ -46,9 +48,9 @@ package() {
 	# Install license
 	install -Dm644 "$srcdir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 
-	# Create directories (ownership set by post-install)
-	install -dm755 "$pkgdir/var/lib/vector"
-	install -dm755 "$pkgdir/var/log/vector"
+	# Create directories
+	install -dm755 -o vector -g vector "$pkgdir/var/lib/vector"
+	install -dm755 -o vector -g vector "$pkgdir/var/log/vector"
 }
 
 sha512sums=""

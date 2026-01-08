@@ -1,7 +1,3 @@
 #!/bin/sh
 
-# Set ownership on directories
-chown vector:vector /var/lib/vector
-chown vector:vector /var/log/vector
-
 exit 0

@@ -49,7 +49,36 @@ The `-i` flag installs the public key to `/etc/apk/keys/` (required for index ge
 
 To push changes (e.g., updated checksums) from the builder to GitHub:
 
-#### Option A: SSH Key (recommended)
+#### Option A: Deploy Key (recommended)
+
+Deploy keys are repository-specific and don't require a personal GitHub account.
+
+```bash
+# Generate SSH key
+ssh-keygen -t ed25519 -C "abuild@builder" -f ~/.ssh/aports_deploy
+
+# Show public key
+cat ~/.ssh/aports_deploy.pub
+```
+
+Add the public key to the repository: **Repository → Settings → Deploy keys → Add deploy key** (enable "Allow write access")
+
+Configure SSH to use the deploy key:
+```bash
+cat >> ~/.ssh/config << 'EOF'
+Host github.com
+    IdentityFile ~/.ssh/aports_deploy
+    IdentitiesOnly yes
+EOF
+chmod 600 ~/.ssh/config
+```
+
+Switch the remote to SSH:
+```bash
+git remote set-url origin git@github.com:shadowinternet/aports.git
+```
+
+#### Option B: Personal SSH Key
 
 ```bash
 # Generate SSH key
@@ -59,14 +88,14 @@ ssh-keygen -t ed25519 -C "abuild@builder"
 cat ~/.ssh/id_ed25519.pub
 ```
 
-Add the public key to GitHub: **Settings → SSH and GPG keys → New SSH key**
+Add the public key to your GitHub account: **Settings → SSH and GPG keys → New SSH key**
 
 Then switch the remote to SSH:
 ```bash
 git remote set-url origin git@github.com:shadowinternet/aports.git
 ```
 
-#### Option B: Personal Access Token (HTTPS)
+#### Option C: Personal Access Token (HTTPS)
 
 1. On GitHub: **Settings → Developer settings → Personal access tokens → Generate new token** with `repo` scope
 2. On the builder:
