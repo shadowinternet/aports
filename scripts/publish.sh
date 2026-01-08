@@ -28,10 +28,10 @@ for arch_dir in "$LOCAL_REPO"/*/; do
         ssh "${REMOTE_USER}@${REMOTE_HOST}" \
             "mkdir -p ${REMOTE_BASE}/${CHANNEL}/${arch}"
 
-        # Sync packages
+        # Sync packages (trailing slash on source copies contents into dest)
         rsync -avz --delete \
             "$arch_dir" \
-            "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_BASE}/${CHANNEL}/"
+            "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_BASE}/${CHANNEL}/${arch}/"
     fi
 done
 
