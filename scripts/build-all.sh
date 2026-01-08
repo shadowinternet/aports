@@ -2,8 +2,8 @@
 # Build all packages in the repository
 set -eu
 
-# Verify abuild is configured (signing key exists)
-if ! ls "$HOME"/.abuild/*.rsa >/dev/null 2>&1; then
+# Verify abuild is configured
+if [ ! -f "$HOME/.abuild/abuild.conf" ]; then
     echo "Error: abuild not configured. Run 'abuild-keygen -a -n' first." >&2
     exit 1
 fi

@@ -31,16 +31,13 @@ package() {
 	# Install logrotate config
 	install -Dm644 "$srcdir/shadowdhcp.logrotate" "$pkgdir/etc/logrotate.d/shadowdhcp"
 
-	# Install default configuration (don't overwrite existing)
-	install -Dm640 -o root -g shadowdhcp "$srcdir/config.json" \
-		"$pkgdir/etc/shadowdhcp/config.json"
-	install -Dm640 -o root -g shadowdhcp "$srcdir/ids.json" \
-		"$pkgdir/etc/shadowdhcp/ids.json"
-	install -Dm640 -o root -g shadowdhcp "$srcdir/reservations.json" \
-		"$pkgdir/etc/shadowdhcp/reservations.json"
+	# Install default configuration (ownership set by post-install)
+	install -Dm640 "$srcdir/config.json" "$pkgdir/etc/shadowdhcp/config.json"
+	install -Dm640 "$srcdir/ids.json" "$pkgdir/etc/shadowdhcp/ids.json"
+	install -Dm640 "$srcdir/reservations.json" "$pkgdir/etc/shadowdhcp/reservations.json"
 
-	# Create log directory
-	install -dm750 -o shadowdhcp -g shadowdhcp "$pkgdir/var/log/shadowdhcp"
+	# Create log directory (ownership set by post-install)
+	install -dm750 "$pkgdir/var/log/shadowdhcp"
 }
 
 sha512sums=""

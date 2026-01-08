@@ -3,6 +3,10 @@
 # Set capability to bind to privileged ports (67/udp, 547/udp)
 setcap 'cap_net_bind_service=+ep' /usr/bin/shadowdhcp || exit 1
 
+# Set ownership on config files and log directory
+chown root:shadowdhcp /etc/shadowdhcp/*.json
+chown shadowdhcp:shadowdhcp /var/log/shadowdhcp
+
 # Generates /etc/shadowdhcp/ids.json with IPv4 address and DUID
 OUTPUT_FILE="/etc/shadowdhcp/ids.json"
 
