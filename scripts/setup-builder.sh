@@ -2,8 +2,8 @@
 # Setup an Alpine build environment
 set -eu
 
-echo "Installing Alpine SDK, doas, and SSH client..."
-apk add --no-cache alpine-sdk doas openssh-client
+echo "Installing Alpine SDK, doas, SSH client, and rsync..."
+apk add --no-cache alpine-sdk doas openssh-client rsync
 
 echo "Creating abuild user if needed..."
 if ! id abuild >/dev/null 2>&1; then

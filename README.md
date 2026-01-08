@@ -205,7 +205,7 @@ chown apk:apk /var/www/apk
 #### 2. Install and Enable SSH Server
 
 ```bash
-apk add openssh
+apk add openssh rsync
 rc-update add sshd
 rc-service sshd start
 ```
@@ -238,11 +238,11 @@ rc-service caddy start
 
 #### 5. Copy Public Signing Key
 
-The repository public key should be accessible at `https://apk.shadowinter.net/keys/shadow.rsa.pub`:
+The repository public key should be accessible at `https://apk.shadowinter.net/keys/shadowinternet.rsa.pub`:
 
 ```bash
 mkdir -p /var/www/apk/keys
-cp shadow.rsa.pub /var/www/apk/keys/
+cp shadowinternet.rsa.pub /var/www/apk/keys/
 chown -R apk:apk /var/www/apk/keys
 ```
 
@@ -292,8 +292,8 @@ ssh apk.shadowinter.net "echo 'SSH connection working'"
 
 ```bash
 # Install public key
-wget -O /etc/apk/keys/shadow.rsa.pub \
-    https://apk.shadowinter.net/keys/shadow.rsa.pub
+wget -O /etc/apk/keys/shadowinternet.rsa.pub \
+    https://apk.shadowinter.net/keys/shadowinternet.rsa.pub
 
 # Add repository
 echo "https://apk.shadowinter.net/stable" >> /etc/apk/repositories
