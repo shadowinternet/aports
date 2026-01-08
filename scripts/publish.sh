@@ -9,7 +9,7 @@ REMOTE_USER="apk"
 REMOTE_BASE="/var/www/apk"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-LOCAL_REPO="$HOME/packages/shadow-aports"
+LOCAL_REPO="$HOME/packages/shadow-aports/packages"
 
 echo "Publishing to channel: $CHANNEL"
 

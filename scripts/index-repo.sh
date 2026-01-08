@@ -5,8 +5,8 @@ set -eu
 
 if [ $# -lt 1 ]; then
     echo "Usage: $0 <repo-path> [signing-key]"
-    echo "Example: $0 ~/packages/shadow-aports/x86_64"
-    echo "Example: $0 ~/packages/shadow-aports/x86_64 ~/.abuild/key.rsa"
+    echo "Example: $0 ~/packages/shadow-aports/packages/x86_64"
+    echo "Example: $0 ~/packages/shadow-aports/packages/x86_64 ~/.abuild/key.rsa"
     exit 1
 fi
 

@@ -23,7 +23,7 @@ cp ~/.abuild/*.rsa.pub keys/
 ./scripts/build-all.sh
 
 # Generate repository index
-./scripts/index-repo.sh ~/packages/shadow-aports/x86_64
+./scripts/index-repo.sh ~/packages/shadow-aports/packages/x86_64
 
 # Publish to remote (stable or edge channel)
 ./scripts/publish.sh stable

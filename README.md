@@ -129,7 +129,7 @@ Build:
 ./scripts/build-package.sh shadowdhcp
 ```
 
-Output: `~/packages/shadow-aports/x86_64/shadowdhcp-*.apk`
+Output: `~/packages/shadow-aports/packages/x86_64/shadowdhcp-*.apk`
 
 ### Build All Packages
 
@@ -140,7 +140,7 @@ Output: `~/packages/shadow-aports/x86_64/shadowdhcp-*.apk`
 ### Generate Repository Index
 
 ```bash
-./scripts/index-repo.sh ~/packages/shadow-aports/x86_64
+./scripts/index-repo.sh ~/packages/shadow-aports/packages/x86_64
 ```
 
 ## Publishing
