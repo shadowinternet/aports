@@ -9,9 +9,9 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-# Verify abuild is configured
-if [ ! -f "$HOME/.abuild/abuild.conf" ]; then
-    echo "Error: abuild not configured. Run 'abuild-keygen -a -i -n' first." >&2
+# Verify abuild is configured (signing key exists)
+if ! ls "$HOME"/.abuild/*.rsa >/dev/null 2>&1; then
+    echo "Error: abuild not configured. Run 'abuild-keygen -a -n' first." >&2
     exit 1
 fi
 
