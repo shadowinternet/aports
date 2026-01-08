@@ -197,20 +197,28 @@ On the hosting server (apk.shadowinter.net):
 
 ```bash
 adduser -D apk
+passwd apk  # Set a password to unlock the account (required for SSH key auth)
 mkdir -p /var/www/apk
 chown apk:apk /var/www/apk
 ```
 
-#### 2. Install Caddy
+#### 2. Install and Enable SSH Server
 
 ```bash
-# Alpine
-apk add caddy
-
-# Or download from https://caddyserver.com/download
+apk add openssh
+rc-update add sshd
+rc-service sshd start
 ```
 
-#### 3. Configure Caddy
+Ensure `PubkeyAuthentication yes` is set in `/etc/ssh/sshd_config`.
+
+#### 3. Install Caddy
+
+```bash
+apk add caddy
+```
+
+#### 4. Configure Caddy
 
 Edit `/etc/caddy/Caddyfile`:
 
@@ -228,7 +236,7 @@ rc-update add caddy
 rc-service caddy start
 ```
 
-#### 4. Copy Public Signing Key
+#### 5. Copy Public Signing Key
 
 The repository public key should be accessible at `https://apk.shadowinter.net/keys/shadow.rsa.pub`:
 
@@ -240,27 +248,44 @@ chown -R apk:apk /var/www/apk/keys
 
 ### SSH Key Setup (Builder to Hoster)
 
-To enable publishing from the builder to the hosting server:
+To enable publishing from the builder to the hosting server, use the same deploy key from step 5.
 
 #### On the Builder (as abuild user)
 
+Show the public key:
 ```bash
-# Generate SSH key
-ssh-keygen -t ed25519 -C "abuild@builder"
-
-# Copy to hosting server
-ssh-copy-id apk@apk.shadowinter.net
-
-# Test connection
-ssh apk@apk.shadowinter.net "echo 'SSH connection working'"
+cat ~/.ssh/aports_deploy.pub
 ```
 
-#### On the Hosting Server
+Copy the output (starts with `ssh-ed25519 ...`).
 
-Ensure the `apk` user's authorized_keys file has the builder's public key:
+Add the hosting server to your SSH config:
+```bash
+cat >> ~/.ssh/config << 'EOF'
+
+Host apk.shadowinter.net
+    IdentityFile ~/.ssh/aports_deploy
+    User apk
+EOF
+```
+
+#### On the Hosting Server (as root)
 
 ```bash
-cat /home/apk/.ssh/authorized_keys
+# Create .ssh directory for apk user
+mkdir -p /home/apk/.ssh
+chmod 700 /home/apk/.ssh
+
+# Add the builder's public key (paste the key from above)
+echo "ssh-ed25519 AAAA... abuild@builder" >> /home/apk/.ssh/authorized_keys
+chmod 600 /home/apk/.ssh/authorized_keys
+chown -R apk:apk /home/apk/.ssh
+```
+
+#### Test Connection (from builder)
+
+```bash
+ssh apk.shadowinter.net "echo 'SSH connection working'"
 ```
 
 ### Client Setup
