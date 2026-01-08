@@ -13,38 +13,61 @@ shadow-aports/
 └── .github/workflows/  # CI/CD automation
 ```
 
-## Quick Start
+## Builder Setup (Alpine Linux)
 
-### Prerequisites
+### 1. Install Build Environment (as root)
 
-On Alpine Linux:
 ```bash
 ./scripts/setup-builder.sh
 ```
 
-Or use Docker:
+This installs the Alpine SDK and creates the `abuild` user with sudo access.
+
+### 2. Switch to Build User
+
+```bash
+su - abuild
+```
+
+### 3. Clone Repository
+
+```bash
+git clone https://github.com/shadowinternet/aports.git ~/aports
+cd ~/aports
+```
+
+### 4. Generate Signing Keys
+
+```bash
+abuild-keygen -a -n
+cp ~/.abuild/*.rsa.pub keys/
+
+# Optional: install key locally to test packages on the builder
+# doas cp ~/.abuild/*.rsa.pub /etc/apk/keys/
+```
+
+Keys are stored in `~/.abuild/` and the public key should be copied to `keys/` for distribution.
+
+### Alternative: Docker
+
 ```bash
 docker run -it --rm -v $(pwd):/work -w /work alpine:latest sh
 apk add alpine-sdk
+adduser -D builder
+su - builder
+# Then generate keys and build as above
 ```
 
-### Generate Signing Keys (first time only)
+## Building Packages
 
-```bash
-abuild-keygen -a -i -n
-# Keys created at ~/.abuild/
-# Copy public key to keys/ directory
-cp ~/.abuild/*.rsa.pub keys/
-```
+### Build a Single Package
 
-### Build a Package
-
-1. Copy the pre-built binary into the package directory. Some packages will download precompiled binaries and can skip this step.
+Some packages download precompiled binaries automatically. For packages requiring a local binary:
 ```bash
 cp /path/to/shadowdhcp packages/shadowdhcp/
 ```
 
-2. Build:
+Build:
 ```bash
 ./scripts/build-package.sh shadowdhcp
 ```
@@ -63,10 +86,17 @@ Output: `~/packages/shadow-aports/x86_64/shadowdhcp-*.apk`
 ./scripts/index-repo.sh ~/packages/shadow-aports/x86_64
 ```
 
+## Publishing
+
 ### Publish to Remote
 
 ```bash
 ./scripts/publish.sh stable
+```
+
+Publishes to the `stable` channel. Use `edge` for development builds:
+```bash
+./scripts/publish.sh edge
 ```
 
 ## Adding a New Package
@@ -101,6 +131,80 @@ Packages are hosted at `https://apk.shadowinter.net/`
 |---------|---------|
 | `stable` | Production releases |
 | `edge` | Development/testing |
+
+### Hosting Server Setup
+
+On the hosting server (apk.shadowinter.net):
+
+#### 1. Create Deploy User
+
+```bash
+adduser -D apk
+mkdir -p /var/www/apk
+chown apk:apk /var/www/apk
+```
+
+#### 2. Install Caddy
+
+```bash
+# Alpine
+apk add caddy
+
+# Or download from https://caddyserver.com/download
+```
+
+#### 3. Configure Caddy
+
+Edit `/etc/caddy/Caddyfile`:
+
+```
+apk.shadowinter.net {
+    root * /var/www/apk
+    file_server browse
+}
+```
+
+Enable and start Caddy:
+
+```bash
+rc-update add caddy
+rc-service caddy start
+```
+
+#### 4. Copy Public Signing Key
+
+The repository public key should be accessible at `https://apk.shadowinter.net/keys/shadow.rsa.pub`:
+
+```bash
+mkdir -p /var/www/apk/keys
+cp shadow.rsa.pub /var/www/apk/keys/
+chown -R apk:apk /var/www/apk/keys
+```
+
+### SSH Key Setup (Builder to Hoster)
+
+To enable publishing from the builder to the hosting server:
+
+#### On the Builder (as abuild user)
+
+```bash
+# Generate SSH key
+ssh-keygen -t ed25519 -C "abuild@builder"
+
+# Copy to hosting server
+ssh-copy-id apk@apk.shadowinter.net
+
+# Test connection
+ssh apk@apk.shadowinter.net "echo 'SSH connection working'"
+```
+
+#### On the Hosting Server
+
+Ensure the `apk` user's authorized_keys file has the builder's public key:
+
+```bash
+cat /home/apk/.ssh/authorized_keys
+```
 
 ### Client Setup
 

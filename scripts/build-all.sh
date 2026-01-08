@@ -2,6 +2,12 @@
 # Build all packages in the repository
 set -eu
 
+# Verify abuild is configured
+if [ ! -f "$HOME/.abuild/abuild.conf" ]; then
+    echo "Error: abuild not configured. Run 'abuild-keygen -a -i -n' first." >&2
+    exit 1
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 

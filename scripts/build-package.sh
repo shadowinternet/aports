@@ -9,6 +9,12 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
+# Verify abuild is configured
+if [ ! -f "$HOME/.abuild/abuild.conf" ]; then
+    echo "Error: abuild not configured. Run 'abuild-keygen -a -i -n' first." >&2
+    exit 1
+fi
+
 PACKAGE="$1"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"

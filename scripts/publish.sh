@@ -5,7 +5,7 @@ set -eu
 
 CHANNEL="${1:-stable}"
 REMOTE_HOST="apk.shadowinter.net"
-REMOTE_USER="root"
+REMOTE_USER="apk"
 REMOTE_BASE="/var/www/apk"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"

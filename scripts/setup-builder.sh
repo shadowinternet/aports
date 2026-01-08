@@ -7,8 +7,7 @@ apk add --no-cache alpine-sdk sudo
 
 echo "Creating abuild user if needed..."
 if ! id abuild >/dev/null 2>&1; then
-    adduser -D abuild
-    addgroup abuild abuild
+    adduser -D -G abuild -s /bin/sh abuild
     echo "abuild ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/abuild
 fi
 
