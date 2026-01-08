@@ -39,14 +39,42 @@ cd ~/aports
 ### 4. Generate Signing Keys
 
 ```bash
-abuild-keygen -a -n
+abuild-keygen -a -i -n
 cp ~/.abuild/*.rsa.pub keys/
-
-# Optional: install key locally to test packages on the builder
-# doas cp ~/.abuild/*.rsa.pub /etc/apk/keys/
 ```
 
-Keys are stored in `~/.abuild/` and the public key should be copied to `keys/` for distribution.
+The `-i` flag installs the public key to `/etc/apk/keys/` (required for index generation). Keys are also stored in `~/.abuild/`.
+
+### 5. Configure Git Authentication
+
+To push changes (e.g., updated checksums) from the builder to GitHub:
+
+#### Option A: SSH Key (recommended)
+
+```bash
+# Generate SSH key
+ssh-keygen -t ed25519 -C "abuild@builder"
+
+# Show public key to add to GitHub
+cat ~/.ssh/id_ed25519.pub
+```
+
+Add the public key to GitHub: **Settings → SSH and GPG keys → New SSH key**
+
+Then switch the remote to SSH:
+```bash
+git remote set-url origin git@github.com:shadowinternet/aports.git
+```
+
+#### Option B: Personal Access Token (HTTPS)
+
+1. On GitHub: **Settings → Developer settings → Personal access tokens → Generate new token** with `repo` scope
+2. On the builder:
+```bash
+git config --global credential.helper store
+git push
+# Enter username and paste token as password
+```
 
 ### Alternative: Docker
 

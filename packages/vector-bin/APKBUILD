@@ -46,9 +46,9 @@ package() {
 	# Install license
 	install -Dm644 "$srcdir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 
-	# Create directories
-	install -dm755 -o vector -g vector "$pkgdir/var/lib/vector"
-	install -dm755 -o vector -g vector "$pkgdir/var/log/vector"
+	# Create directories (ownership set by post-install)
+	install -dm755 "$pkgdir/var/lib/vector"
+	install -dm755 "$pkgdir/var/log/vector"
 }
 
 sha512sums=""

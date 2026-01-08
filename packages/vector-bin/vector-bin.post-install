@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# Ensure directories exist with correct permissions
-install -dm755 -o vector -g vector /var/lib/vector 2>/dev/null
-install -dm755 -o vector -g vector /var/log/vector 2>/dev/null
+# Set ownership on directories
+chown vector:vector /var/lib/vector
+chown vector:vector /var/log/vector
 
 exit 0
