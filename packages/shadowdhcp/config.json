@@ -1,1 +1,12 @@
-{"dns_v4": [], "subnets_v4": []}
+{
+    "dns_v4": ["8.8.8.8", "8.8.4.4"],
+    "dns_v6": ["2001:4860:4860::8888", "2001:4860:4860::8844"],
+    "subnets_v4": [],
+    "logging": {
+        "stdout": false,
+        "file": {
+            "path": "/var/log/shadowdhcp/shadowdhcp.log",
+            "max_files": 3
+        }
+    }
+}
