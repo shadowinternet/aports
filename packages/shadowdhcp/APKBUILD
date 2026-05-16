@@ -6,10 +6,9 @@ pkgdesc="Reservation-only DHCPv4/DHCPv6 server"
 url="https://github.com/shadowinternet/shadowdhcp"
 arch="x86_64 aarch64"
 license="MIT AND Apache-2.0"
-depends="libcap-utils"
 pkgusers="shadowdhcp"
 pkggroups="shadowdhcp"
-install="$pkgname.pre-install $pkgname.post-install $pkgname.post-upgrade"
+install="$pkgname.pre-install $pkgname.post-install"
 
 case "$CARCH" in
 	x86_64)  _musl_arch="x86_64"  ;;

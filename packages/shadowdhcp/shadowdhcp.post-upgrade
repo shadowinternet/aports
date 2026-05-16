@@ -1,6 +1,0 @@
-#!/bin/sh
-
-# Re-apply capability after binary replacement
-setcap 'cap_net_bind_service=+ep' /usr/bin/shadowdhcp
-
-exit 0

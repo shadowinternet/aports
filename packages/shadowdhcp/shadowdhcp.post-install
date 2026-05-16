@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# Set capability to bind to privileged ports (67/udp, 547/udp)
-setcap 'cap_net_bind_service=+ep' /usr/bin/shadowdhcp || exit 1
-
 # Generates /etc/shadowdhcp/ids.json with IPv4 address and DUID
 OUTPUT_FILE="/etc/shadowdhcp/ids.json"
 
